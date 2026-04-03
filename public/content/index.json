@@ -1,0 +1,28 @@
+{
+  "categories": [
+    {
+      "title": "Начало работы",
+      "icon": "🚀",
+      "items": [
+        { "title": "Введение", "path": "example" },
+        { "title": "Установка", "path": "example2" }
+      ]
+    },
+    {
+      "title": "Требования",
+      "icon": "📋",
+      "items": [
+        { "title": "Функциональные требования", "path": "example" },
+        { "title": "Нефункциональные требования", "path": "example" }
+      ]
+    },
+    {
+      "title": "Шаблоны",
+      "icon": "📄",
+      "items": [
+        { "title": "SRS Template", "path": "example" },
+        { "title": "BRD Template", "path": "example" }
+      ]
+    }
+  ]
+}
