@@ -3,14 +3,8 @@
     <Sidebar :current-doc="currentDoc" @select-doc="navigateToDoc" />
     
     <main class="main-content">
-      <div class="content-header">
-        <button @click="copyLink" class="copy-link-btn" title="Копировать ссылку">
-          📋 Копировать ссылку
-        </button>
-      </div>
-      
       <div v-if="loading" class="loading">
-        Загрузка документа...
+        Loading document...
       </div>
       <div v-else-if="error" class="error">
         {{ error }}
@@ -30,7 +24,6 @@ const adocContent = ref('')
 const loading = ref(false)
 const error = ref(null)
 
-// Загрузка документа
 const loadDocument = async (path) => {
   if (!path) return
   
@@ -41,12 +34,11 @@ const loadDocument = async (path) => {
     const response = await fetch(`/content/${path}.adoc`)
     
     if (!response.ok) {
-      throw new Error(`Документ "${path}" не найден`)
+      throw new Error(`Document "${path}" not found`)
     }
     
     adocContent.value = await response.text()
     
-    // Сохраняем последний открытый документ
     localStorage.setItem('lastDocument', path)
   } catch (err) {
     error.value = err.message
@@ -56,33 +48,16 @@ const loadDocument = async (path) => {
   }
 }
 
-// Навигация
 const navigateToDoc = (path) => {
   if (currentDoc.value === path) return
   currentDoc.value = path
   loadDocument(path)
   
-  // Обновляем URL без перезагрузки страницы
   const url = new URL(window.location)
   url.searchParams.set('doc', path)
   window.history.pushState({}, '', url)
 }
 
-// Копирование ссылки
-const copyLink = () => {
-  const url = `${window.location.origin}${window.location.pathname}?doc=${currentDoc.value}`
-  navigator.clipboard.writeText(url)
-  
-  // Визуальная обратная связь
-  const btn = document.querySelector('.copy-link-btn')
-  const originalText = btn.textContent
-  btn.textContent = '✅ Скопировано!'
-  setTimeout(() => {
-    btn.textContent = originalText
-  }, 2000)
-}
-
-// При загрузке страницы читаем doc из URL или localStorage
 onMounted(() => {
   const urlParams = new URLSearchParams(window.location.search)
   const docParam = urlParams.get('doc')
@@ -101,7 +76,6 @@ onMounted(() => {
   }
 })
 
-// Слушаем кнопки назад/вперед в браузере
 window.addEventListener('popstate', () => {
   const urlParams = new URLSearchParams(window.location.search)
   const docParam = urlParams.get('doc')
@@ -172,7 +146,6 @@ body {
   border-left: 4px solid #d32f2f;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
   .main-content {
     margin-left: 0;

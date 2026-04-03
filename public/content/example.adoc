@@ -1,11 +1,10 @@
-= Моя документация
-:author: Аналитик
+= REST API method
+:author: Analyst
 
-== Введение
+== Parameters
 
-Это тест.
 
-== Таблица
+== Parameters description
 
 |===
 | Название | Статус

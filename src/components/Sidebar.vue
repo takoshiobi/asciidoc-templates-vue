@@ -1,12 +1,12 @@
 <template>
   <aside class="sidebar">
     <div class="sidebar-header">
-      <h2>📚 Содержание</h2>
+        <h2>Templates</h2>
     </div>
     
     <nav class="sidebar-nav">
       <div v-if="loading" class="loading-menu">
-        Загрузка меню...
+        Loading menu...
       </div>
       <div v-else-if="error" class="error-menu">
         {{ error }}
@@ -30,7 +30,6 @@
               @click="selectDoc(item.path)"
               :class="{ active: currentDoc === item.path }"
             >
-              <span class="doc-icon">📄</span>
               <span class="doc-title">{{ item.title }}</span>
             </li>
           </ul>
@@ -68,7 +67,7 @@ const selectDoc = (path) => {
 
 onMounted(async () => {
   try {
-    console.log('Загрузка меню...')
+    console.log('Loading menu...')
     const response = await fetch('/content/index.json')
     
     if (!response.ok) {
@@ -76,39 +75,35 @@ onMounted(async () => {
     }
     
     const data = await response.json()
-    console.log('Загруженные данные:', data)
+    console.log('Data loaded:', data)
     
-    // Проверяем структуру данных
     if (data && Array.isArray(data.categories)) {
       categories.value = data.categories
     } else if (Array.isArray(data)) {
       categories.value = data
     } else {
-      console.error('Неверная структура данных:', data)
-      throw new Error('Неверная структура index.json. Ожидается массив categories')
+      console.error('Incorrect data structure:', data)
+      throw new Error('Incorrect data structure of index.json. Expecting categories array')
     }
     
-    // Инициализируем состояние категорий
     categories.value.forEach(cat => {
       const saved = localStorage.getItem(`expanded_${cat.title}`)
-      // По умолчанию первая категория раскрыта
       const isExpanded = saved === 'true' || (saved === null && cat.title === categories.value[0]?.title)
       expandedCategories[cat.title] = isExpanded
     })
     
     loading.value = false
   } catch (err) {
-    console.error('Ошибка загрузки меню:', err)
-    error.value = `Не удалось загрузить меню: ${err.message}`
+    console.error('Menu loading error:', err)
+    error.value = `Unable to load menu: ${err.message}`
     loading.value = false
     
-    // Данные по умолчанию на случай ошибки
     categories.value = [
       {
-        title: "Начало работы",
+        title: "Getting started",
         icon: "🚀",
         items: [
-          { title: "Введение", path: "getting-started/intro" }
+          { title: "Introduction", path: "getting-started/intro" }
         ]
       }
     ]
@@ -182,7 +177,6 @@ onMounted(async () => {
 }
 
 .category-title.expanded {
-  background: #e9ecef;
   color: #2c3e50;
 }
 
@@ -243,7 +237,6 @@ onMounted(async () => {
   flex: 1;
 }
 
-/* Стилизация скроллбара */
 .sidebar::-webkit-scrollbar {
   width: 6px;
 }

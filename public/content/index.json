@@ -1,28 +1,34 @@
 {
   "categories": [
     {
-      "title": "Начало работы",
-      "icon": "🚀",
+      "title": "REST API",
+      "icon": "",
       "items": [
-        { "title": "Введение", "path": "example" },
-        { "title": "Установка", "path": "example2" }
+        { "title": "Method description", "path": "rest-api-method" }
       ]
     },
     {
-      "title": "Требования",
-      "icon": "📋",
+      "title": "Kafka",
+      "icon": "",
       "items": [
-        { "title": "Функциональные требования", "path": "example" },
-        { "title": "Нефункциональные требования", "path": "example" }
+        { "title": "Inbound topic", "path": "example" },
+        { "title": "Outbound topic", "path": "example" }
       ]
     },
     {
-      "title": "Шаблоны",
-      "icon": "📄",
+      "title": "Database",
+      "icon": "",
       "items": [
-        { "title": "SRS Template", "path": "example" },
-        { "title": "BRD Template", "path": "example" }
+        { "title": "Database structure", "path": "example" },
+        { "title": "Table description", "path": "example" }
       ]
+    },
+    {
+        "title": "gRPC",
+        "icon": "",
+        "items": [
+            { "title": "Method description", "path": "example" }
+        ]
     }
   ]
 }
