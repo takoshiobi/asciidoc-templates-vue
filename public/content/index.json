@@ -11,23 +11,23 @@
       "title": "Kafka",
       "icon": "",
       "items": [
-        { "title": "Inbound topic", "path": "example" },
-        { "title": "Outbound topic", "path": "example" }
+        { "title": "Inbound topic", "path": "inbound-topic" },
+        { "title": "Outbound topic", "path": "outbound-topic" }
       ]
     },
     {
       "title": "Database",
       "icon": "",
       "items": [
-        { "title": "Database structure", "path": "example" },
-        { "title": "Table description", "path": "example" }
+        { "title": "Database structure", "path": "database" },
+        { "title": "Table description", "path": "database-table" }
       ]
     },
     {
         "title": "gRPC",
         "icon": "",
         "items": [
-            { "title": "Method description", "path": "example" }
+            { "title": "Method description", "path": "grpc-method" }
         ]
     }
   ]

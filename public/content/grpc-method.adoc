@@ -1,0 +1,107 @@
+== {MethodName} 
+
+.Changelog
+[%collapsible]
+==== 
+[cols="1,1,3", options="header"]
+|===
+| Date | Version | Description
+| YYYY-MM-DD | 1.0 | Initial version
+| YYYY-MM-DD | 1.1 | Added {some field}
+|===
+====
+
+=== Overview
+- **Type:** `Unary` | `ServerStream` | `ClientStream` | `BidiStream`
+- **Business use case:** What problem does this solve? When is it called?
+- **Idempotent:** Yes / No
+
+=== Request
+[source,json]
+----
+{
+  "resource_id": "res_a1b2c3d4e5f6g7h8",
+  "field1": "example_value",
+  "field2": 42,
+  "field3": true
+}
+----
+
+=== Request Parameters
+[cols="1,1,1,2,2", options="header"]
+|===
+| Field | Type | Required | Description | Validation
+| `resource_id` | string | Yes | Unique identifier of the resource | Format: `res_[a-z0-9]{16}`
+| `field1` | string | Yes | Main business field | Min 3, max 100 chars; alphanumeric + underscore
+| `field2` | int32 | No | Secondary counter | Range: 0–1000
+| `field3` | bool | Yes | Feature toggle | `true` = enable, `false` = disable
+|===
+
+=== Response (Success)
+[source,json]
+----
+{
+  "request_id": "req_550e8400-e29b-41d4-a716-446655440000",
+  "data": {
+    "id": 12345,
+    "field1": "example_value",
+    "field2": 42,
+    "created_at": "2026-04-05T10:30:00Z"
+  },
+  "warnings": []
+}
+----
+
+=== Response Parameters
+[cols="1,1,1,2", options="header"]
+|===
+| Field | Type | Nullable | Description
+| `request_id` | string | No | Correlation ID for distributed tracing
+| `data.id` | int64 | No | Auto-generated unique identifier
+| `data.field1` | string | No | Echo of input field1 (or transformed value)
+| `data.field2` | int32 | No | Echo of input field2 (or computed value)
+| `data.created_at` | string (ISO 8601) | No | UTC timestamp: `YYYY-MM-DDThh:mm:ssZ`
+| `warnings` | array[string] | Yes | Deprecation notices, non-critical issues
+|===
+
+=== Prerequisites
+[cols="1,2", options="header"]
+|===
+| Requirement | Description
+| Auth | JWT via `authorization` metadata. Scope: `read:resources` (reads) / `write:resources` (writes)
+| Timeout | Server timeout: 30s
+| Rate limit | 500 requests/min per `client-id`
+| Retry policy | Retryable codes: `UNAVAILABLE`, `DEADLINE_EXCEEDED`. Max 3 attempts, backoff 1s/2s/4s
+|===
+
+=== Logic Flow
+. Validate JWT + scope from metadata
+. Validate request fields → return `INVALID_ARGUMENT`
+. Authorize resource-level access
+. Execute business logic (within DB transaction for writes)
+. Emit Kafka event (after commit)
+. Return response with `request_id`
+
+=== Additional Information
+- **Deprecation:** `UNIMPLEMENTED` after sunset date. Warning via `warnings` field.
+- **Related:** REST `POST /v1/resources`, Kafka `resource.updated`, gRPC `GetResource`
+- **Owners:** @team-backend (#backend-team)
+
+=== gRPC Status Codes
+[%collapsible]
+====
+[cols="1,2", options="header"]
+|===
+| Code | When
+| `OK (0)` | Success
+| `INVALID_ARGUMENT (3)` | Validation failed
+| `NOT_FOUND (5)` | Resource missing
+| `PERMISSION_DENIED (7)` | Bad role/scope or missing consent
+| `RESOURCE_EXHAUSTED (8)` | Rate limit exceeded → check `retry-after`
+| `FAILED_PRECONDITION (9)` | Business rule violation
+| `ABORTED (10)` | Concurrent update → retry with fresh ETag
+| `INTERNAL (13)` | Unexpected error → report with `request_id`
+| `UNAVAILABLE (14)` | Transient failure → retry with backoff
+| `UNAUTHENTICATED (16)` | Invalid/missing token
+|===
+====

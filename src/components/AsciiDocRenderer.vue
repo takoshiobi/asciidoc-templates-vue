@@ -54,11 +54,14 @@ watch(() => props.content, renderAsciiDoc, { immediate: true });
   color: #34495e;
   margin-top: 20px;
   margin-bottom: 20px;
+  border-bottom: 1px solid #e8e8e8;
+  padding-bottom: 10px;
+  font-size: 28px;
 }
 
 .adoc-content :deep(h3) {
-  color: #5d7c9d;
-  margin-top: 24px;
+  color: #34495ed1;
+  margin-top: 28px;
 }
 
 .adoc-content :deep(h4) {
