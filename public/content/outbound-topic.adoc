@@ -106,13 +106,11 @@ Our service sends a message to this topic when:
 If a consumer needs historical data, use one of these methods:
 
 {blank} +
-
 **Method 1: REST export (for small datasets, < 100K orders)**
 
 * `GET /api/v1/orders/export?from={date}` → JSON format
 
 {blank} +
-
 **Method 2: Kafka offset reset (for new consumer groups only)**
 
 [source,bash]
@@ -125,13 +123,11 @@ kafka-consumer-groups --bootstrap-server kafka-prod:9092 \
 ----
 
 {blank} +
-
 **Method 3: S3 dump (for large datasets > 1M orders)**
 
 * `s3://company-data-lake/orders/dt=YYYY-MM-DD/` — contact `@data-platform`
 
 {blank} +
-
 **Method 4: Request replay**
 
 * Submit ticket in `#kafka-requests` with: date range, consumer group, temporary topic name
