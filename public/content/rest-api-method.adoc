@@ -83,20 +83,20 @@ curl -X {HTTP_METHOD} "https://api.example.com{/api/v1/resource}" \
 ----
 
 === Business Logic
-. **Step 1 — Authentication & Authorization**
+. **Authentication & Authorization**
 .. Validate JWT token from `Authorization` header
 .. Check user has required role/permission
-. **Step 2 — Input Validation**
+. **Input Validation**
 .. Validate all required fields present
 .. Apply validation rules from table <<target-id, Request Parameters>>
 .. Return `400` with details if validation fails
-. **Step 3 — Business Operation**
+. **Business Operation**
 .. Perform core logic (e.g., create/update resource in database)
 .. Execute within database transaction
-. **Step 4 — Side Effects**
+. **Side Effects**
 .. Publish Kafka event to `topic.resource.updated`
 .. Send async notification (if configured)
-. **Step 5 — Response Construction**
+. **Response Construction**
 .. Build response DTO
 .. Return `201`/`200` with response body
 
@@ -115,15 +115,12 @@ curl -X {HTTP_METHOD} "https://api.example.com{/api/v1/resource}" \
 |===
 
 === Additional Information
-- **OpenAPI Specification:** [Link to Swagger/OpenAPI file]
-- **Related Endpoints:**
-  - `GET /api/v1/resource` — List all resources
-  - `GET /api/v1/resource/{id}` — Get resource by ID
-  - `DELETE /api/v1/resource/{id}` — Delete resource by ID
-- **Related Kafka Topics:** `resource.created`, `resource.updated`
-- **Related gRPC Method:** `ResourceService.UpdateResource`
-- **Rollback behavior:** Describe what happens on failure  
-- **Contact:** Team @backend-team (Slack: #team-backend)
+* **OpenAPI Specification:** [Link to Swagger/OpenAPI file]
+* **Related Endpoints:** `GET /api/v1/resource` — list all resources, `GET /api/v1/resource/{id}` — get resource by id
+* **Related Kafka Topics:** `resource.created`, `resource.updated`
+* **Related gRPC Method:** `ResourceService.UpdateResource`
+* **Rollback behavior:** Describe what happens on failure  
+* **Contact:** Team @backend-team (Slack: #team-backend)
 
 
 === HTTP Status Codes

@@ -106,14 +106,12 @@ watch(() => props.content, renderAsciiDoc, { immediate: true });
 }
 
 .adoc-content :deep(ul) {
-  padding-left: 0px;
   list-style-type: none;
 }
 
 .adoc-content :deep(ul li) {
   margin: 2px 0;  
   padding-left: 0px;
-  position: relative;
 }
 
 .adoc-content :deep(ol) {
