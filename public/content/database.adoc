@@ -1,13 +1,66 @@
-= REST API method
-:author: Analyst
-
-== Parameters
-
-
-== Parameters description
-
+== Database Documentation: {database.name}
+.Changelog
+[%collapsible]
+==== 
+[cols="1,1,3", options="header"]
 |===
-| Название | Статус
-| FR-001 | Готово
-| FR-002 | В работе
+| Date | Version | Description
+| YYYY-MM-DD | 1.0 | Initial version
+| YYYY-MM-DD | 1.1 | Added {some field}
 |===
+====
+
+=== Entity-Relationship Diagram (ERD)
+image::../src/assets/db.png[]
+
+
+=== Database Schema Overview
+
+==== Core Tables
+[cols="1,1,2,2", options="header"]
+|===
+| Table | Description | Primary Key | Row count (approx)
+| `users` | System users / customers | `id` (bigint) | 1.5M
+| `roles` | User roles for RBAC | `id` (bigint) | 10
+| `user_roles` | Junction table (many-to-many) | composite (`user_id`, `role_id`) | 2.3M
+|===
+
+==== Relationships
+[cols="1,1,2,2", options="header"]
+|===
+| From Table | To Table | Relationship | Foreign Key
+| `user_roles` | `users` | Many-to-One | `user_roles.user_id` → `users.id`
+| `user_roles` | `roles` | Many-to-One | `user_roles.role_id` → `roles.id`
+|===
+
+=== Data Retention Policy
+[cols="1,1,2", options="header"]
+|===
+| Table | Retention | Action
+| `users` | Indefinite | Never deleted (soft delete via `deleted_at`)
+| `roles` | Indefinite | Static reference data
+| `user_roles` | Indefinite | Never deleted (historical audit)
+|===
+
+=== Common Query Examples
+
+**Get all roles for a user:**
+[source,sql]
+----
+SELECT r.name
+FROM users u
+JOIN user_roles ur ON u.id = ur.user_id
+JOIN roles r ON ur.role_id = r.id
+WHERE u.email = 'user@example.com';
+----
+
+{blank} +
+**Get all users with a specific role:**
+[source,sql]
+----
+SELECT u.id, u.email, u.full_name
+FROM users u
+JOIN user_roles ur ON u.id = ur.user_id
+JOIN roles r ON ur.role_id = r.id
+WHERE r.
+----

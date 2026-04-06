@@ -68,7 +68,7 @@ const selectDoc = (path) => {
 onMounted(async () => {
   try {
     console.log('Loading menu...')
-    const response = await fetch('/content/index.json')
+    const response = await fetch('/index.json')
     
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)

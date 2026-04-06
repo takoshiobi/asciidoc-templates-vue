@@ -1,0 +1,102 @@
+== Table: {table.name}
+.Changelog
+[%collapsible]
+==== 
+[cols="1,1,3", options="header"]
+|===
+| Date | Version | Description
+| YYYY-MM-DD | 1.0 | Initial version
+| YYYY-MM-DD | 1.1 | Added {some field}
+|===
+====
+
+=== Overview
+**Database name:** `{database}`
+
+**Description:** Brief description of what this table stores (e.g., "System users and their profile information")
+
+**Schema:** `public`
+
+**Owner service:** `{service.name}`
+
+**Rows (approx):** `{N}`
+
+**Average row size:** `{N} KB`
+
+**Growth rate:** `{N}` rows per day / month
+
+
+=== Columns
+
+[cols="1,1,1,2,2,1", options="header"]
+|===
+| Column | Type | Nullable | Default | Description | Constraints
+| `id` | bigint | No | `nextval('{table}_id_seq')` | Primary key, unique identifier | PK
+| `email` | varchar(255) | No | - | User's email address (used for login) | UNIQUE
+| `full_name` | varchar(255) | No | - | User's full legal name | -
+| `status` | varchar(50) | No | `'active'` | User account status | CHECK: `active`, `suspended`, `deleted`
+| `created_at` | timestamp | No | `now()` | When the record was created | -
+| `updated_at` | timestamp | No | `now()` | When the record was last updated | -
+| `deleted_at` | timestamp | Yes | `null` | Soft delete timestamp (null = active) | -
+|===
+
+=== Indexes
+
+[cols="1,1,2,2", options="header"]
+|===
+| Index Name | Columns | Type | Purpose
+| `idx_{table}_email` | `email` | UNIQUE B-tree | Fast lookup by email (login)
+| `idx_{table}_status` | `status` | B-tree | Filter by account status
+| `idx_{table}_created_at` | `created_at` | B-tree | Time-based queries and reports
+| `idx_{table}_deleted_at` | `deleted_at` | B-tree | Exclude soft-deleted rows efficiently
+|===
+
+=== Foreign Keys
+
+[cols="1,1,2", options="header"]
+|===
+| Referencing Table | Foreign Key Column | Constraint Name
+| `user_roles` | `user_id` | `fk_user_roles_user_id`
+| `user_sessions` | `user_id` | `fk_user_sessions_user_id`
+| `audit_log` | `user_id` | `fk_audit_log_user_id`
+|===
+
+=== Check Constraints
+
+[cols="1,2,2", options="header"]
+|===
+| Constraint Name | Condition | Purpose
+| `ck_{table}_email_format` | `email ~ '^[^@]+@[^@]+\.[^@]+$'` | Ensure valid email format
+| `ck_{table}_status_values` | `status IN ('active', 'suspended', 'deleted')` | Restrict status to allowed values
+|===
+
+=== Common Queries
+
+**Get active user by email:**
+[source,sql]
+----
+SELECT id, email, full_name, status
+FROM {table.name}
+WHERE email = 'user@example.com'
+  AND deleted_at IS NULL;
+----
+
+{blank} +
+**List recently created users:**
+[source,sql]
+----
+SELECT id, email, full_name, created_at
+FROM {table.name}
+WHERE deleted_at IS NULL
+ORDER BY created_at DESC
+LIMIT 100;
+----
+
+{blank} +
+**Soft delete a user:**
+[source,sql]
+----
+UPDATE {table.name}
+SET deleted_at = now(), status = 'deleted'
+WHERE id = {user_id};
+----
