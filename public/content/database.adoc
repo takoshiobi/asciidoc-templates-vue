@@ -11,7 +11,7 @@
 ====
 
 === Entity-Relationship Diagram (ERD)
-image::../src/assets/db.png[]
+image::../../src/assets/db.png[]
 
 
 === Database Schema Overview

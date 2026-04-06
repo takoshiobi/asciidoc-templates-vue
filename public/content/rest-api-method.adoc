@@ -103,7 +103,7 @@ curl -X {HTTP_METHOD} "https://api.example.com{/api/v1/resource}" \
 {blank} +
 
 ==== Sequence diagram
-image::../src/assets/seq.png[]
+image::../../src/assets/seq.png[]
 
 === Prerequisites
 [cols="1,2", options="header"]
