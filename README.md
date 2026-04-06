@@ -16,11 +16,11 @@ This collection of templates is designed to present the most critical informatio
 
 | Template | Description |
 |----------|-------------|
-| **Database** | ERD + full table specification with constraints and relationships |
-| **REST API** | Complete method template with cURL examples, validation rules, error handling and business logic |
-| **gRPC** | Minimalistic template with request example, status codes and streaming support |
-| **Kafka (Inbound)** | Inbound topic description for consumer service |
-| **Kafka (Outbound)** | Outbound topic description for producer service |
+| **[Database](./public/content/database.adoc)** | ERD + full table specification with constraints and relationships |
+| **[REST API Method](./public/content/rest-api-method.adoc)** | Complete method template with cURL examples, validation rules, error handling and business logic |
+| **[gRPC Method](./public/content/grpc-method.adoc)** | Minimalistic template with request example, status codes and streaming support |
+| **[Kafka Topic (Inbound)](./public/content/inbound-topic.adoc)** | Inbound topic description for consumer service |
+| **[Kafka Topic (Outbound)](./public/content/outbound-topic.adoc)** | Outbound topic description for producer service |
 
 ## 🚀 Quick Start
 ```bash
