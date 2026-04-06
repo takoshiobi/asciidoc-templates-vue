@@ -1,0 +1,92 @@
+== Kafka Inbound Topic: {topic.name} 
+
+.Changelog
+[%collapsible]
+==== 
+[cols="1,1,3", options="header"]
+|===
+| Date | Version | Description
+| YYYY-MM-DD | 1.0 | Initial version
+| YYYY-MM-DD | 1.1 | Added {some field}
+|===
+====
+
+
+=== Connection Information 
+__Add a link to the topic owner's description, if it exists. Otherwise, fill in the table below.__
+[cols="1,2,2,2", options="header"]
+|===
+| Environment | Bootstrap Servers | Topic Name | Consumer Group
+| **Production** | `kafka-prod.internal:9092` | `{topic.name}` | `{service}-prod-v1`
+| **Preprod (Staging)** | `kafka-staging.internal:9092` | `{topic.name}` | `{service}-staging-v1`
+| **Test** | `kafka-test.internal:9092` | `{topic.name}-test` | `{service}-test-v1`
+| **Development** | `kafka-dev.internal:9092` | `{topic.name}-dev` | `{service}-dev-v1`
+|===
+
+{blank} +
+
+**Additional connection notes:**
+
+* Security: `SASL_SSL` (production only)
+* Auto offset reset: `earliest` (for new consumer groups)
+* Commit strategy: manual after successful business logic
+
+=== Message Contract
+__Add a link to the topic owner's description, if it exists. Otherwise, fill Example and Fields Description below.__
+==== Example
+[source,json]
+----
+{
+  "event_id": "evt_550e8400-e29b-41d4-a716-446655440001",
+  "event_type": "PAYMENT_COMPLETED",
+  "event_version": 1,
+  "created_at": "2026-04-06T10:30:00Z",
+  "source_system": "payment-gateway",
+  "correlation_id": "req_123e4567-e89b-12d3-a456-426614174001",
+  "payload": {
+    "payment_id": "pay_9876543223",
+    "order_id": "ord_12345",
+    "customer_id": "cus_67890",
+    "amount": 99.99,
+    "currency": "USD",
+    "payment_method": "credit_card"
+  }
+}
+----
+
+==== Fields Description
+[cols="1,1,1,2", options="header"]
+|===
+| Field | Type | Required | Description 
+| `event_id` | string (UUID) | Yes | Unique message identifier 
+| `event_type` | string (enum) | Yes | Type of business event 
+| `event_version` | int | Yes | Schema version 
+| `created_at` | string (ISO 8601) | Yes | When event occurred in source system
+| `source_system` | string | Yes | Which system produced this event 
+| `correlation_id` | string (UUID) | Yes | End-to-end trace ID 
+| `payload.payment_id` | string | Conditional* | Payment identifier 
+| `payload.order_id` | string | Conditional* | Order identifier 
+| `payload.customer_id` | string | Yes | Customer who performed action 
+| `payload.amount` | decimal | Conditional* | Monetary amount 
+| `payload.currency` | string | Conditional* | Currency code (ISO 4217) 
+| `payload.payment_method` | string | Conditional* | How customer paid. 
+|===
+
+=== Business Logic 
+. Verify `order_id` exists in `orders` table. If not → skip, log error (manual investigation required).
+. Verify current order status is `AWAITING_PAYMENT`. If already `PAID` → skip as duplicate.
+. Update order status from `AWAITING_PAYMENT` to `PAID`.
+. Store payment details in `payments` table (`payment_id`, `amount`, `currency`, `payment_method`).
+. Emit `order.paid` event to `order.events` topic.
+. Send email confirmation to customer.
+. Commit Kafka offset.
+
+=== Error Handling & Retry Strategy
+[cols="1,1,2", options="header"]
+|===
+| Error Type | Business impact | Our action
+| Order not found | Cannot update status | Skip message, send to DLQ, alert manually (data inconsistency between systems)
+| Validation failed (malformed payload) | Can't process event due to producer bug | Skip message, send to DLQ, alert producer team
+| Duplicate message (by event_id) | No business impact | Skip silently, commit offset
+|===
+
