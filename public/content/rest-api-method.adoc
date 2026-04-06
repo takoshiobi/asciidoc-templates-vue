@@ -1,5 +1,5 @@
-== [POST|GET|PUT|PATCH|DELETE] /api/v1/resource
-
+== {HTTP Method} /api/v1/resource
+:source-highlighter: highlight.js
 .Changelog
 [%collapsible]
 ==== 
@@ -100,8 +100,10 @@ curl -X {HTTP_METHOD} "https://api.example.com{/api/v1/resource}" \
 .. Build response DTO
 .. Return `201`/`200` with response body
 
-==== Sequence diagram
+{blank} +
 
+==== Sequence diagram
+image::../src/assets/seq.png[]
 
 === Prerequisites
 [cols="1,2", options="header"]

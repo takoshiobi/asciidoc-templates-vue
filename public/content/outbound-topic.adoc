@@ -42,8 +42,8 @@ security.protocol=SASL_SSL
 sasl.mechanism=PLAIN
 ----
 
-=== Message Contract (Example)
-
+=== Message Contract
+==== Example
 [source,json]
 ----
 {
@@ -63,7 +63,7 @@ sasl.mechanism=PLAIN
 }
 ----
 
-=== Message Fields Description
+==== Message Fields Description
 [cols="1,1,1,2", options="header"]
 |===
 | Field | Type | Required | Description

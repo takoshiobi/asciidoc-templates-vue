@@ -33,6 +33,7 @@ __Add a link to the topic owner's description, if it exists. Otherwise, fill in 
 
 === Message Contract
 __Add a link to the topic owner's description, if it exists. Otherwise, fill Example and Fields Description below.__
+
 ==== Example
 [source,json]
 ----

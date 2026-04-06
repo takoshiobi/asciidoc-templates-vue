@@ -108,6 +108,7 @@ body {
   margin-left: 280px;
   padding: 30px 40px;
   max-width: calc(100% - 280px);
+  background-color: white;
 }
 
 .content-header {
